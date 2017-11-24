@@ -232,6 +232,7 @@ LinkedListIterator_next(LinkedListIterator *iterator) {
  */
 void
 LinkedList_print_string_list(LinkedList *list) {
+  printf("%s", "List: ");
     for (LinkedListNode *node=list->first; node != NULL; node=node->next) {
 	printf("%s", (char*)node->data);
 	if (node->next != NULL) {

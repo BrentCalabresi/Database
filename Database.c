@@ -16,12 +16,14 @@ Database* Database_init(){
 }
 
 void insert_CSG(CSG* data, Database* db){
-  int key = atoi(data->course)+data->studentId;//convert string into int for easier key calculation
+  int key = getKey(data->course)+data->studentId;
   HashTable_put(db->CSG,key,data);
 }
-void delete(){
+void remove_CSG(CSG* tuple, Database* db){
+  Hashtable_remove_CSG(db->CSG,tuple);
+  printf("%s %p\n", "Removing: ",tuple);
 }
-CSG* lookup_csg(CSG* tuple, Database* db){
+CSG* lookup_csg(CSG* tuple, Database* db){//tuple's key will be calculated in hashtable
   CSG* relation;
   if (strcmp(tuple->course,"*") == 0) {//wildcard element of tuple
   }
@@ -29,8 +31,32 @@ CSG* lookup_csg(CSG* tuple, Database* db){
   }
   if (strcmp(tuple->grade,"*") == 0) {//wildcard element of tuple
   }
-  //printf("%s\n", "made it");
-  relation = HashTable_lookup(db->CSG,(int) *tuple->course+tuple->studentId);
-
+  relation = HashTable_lookup_CSG(db->CSG,tuple);
+  if (relation == NULL)
+    relation = CSG_new("NULL",-1,"NULL");//returning a "NULL" makes for easier debugging
   return relation;
+}
+
+void insert_SNAP(SNAP* data, Database* db){
+  int key = data->studentId;//only 1 copy of each student in this structure
+  HashTable_put(db->SNAP,key,data);
+}
+SNAP* lookup_SNAP(SNAP* tuple, Database* db){//tuple's key will be calculated in hashtable
+  SNAP* relation;
+  if (strcmp(tuple->name,"*") == 0) {//wildcard element of tuple
+  }
+  if (tuple->studentId == -1) {//wildcard element for int val of tuple
+  }
+  if (strcmp(tuple->address,"*") == 0) {//wildcard element of tuple
+  }
+  if (strcmp(tuple->phone,"*") == 0) {//wildcard element of tuple
+  }
+  relation = HashTable_lookup_SNAP(db->SNAP,tuple);
+  if (relation == NULL)
+    relation = SNAP_new(-1,"NULL","NULL","NULL");//returning a "NULL" makes for easier debugging
+  return relation;
+}
+void remove_SNAP(SNAP* tuple, Database* db){
+  Hashtable_remove_SNAP(db->CSG,tuple);
+  printf("%s %p\n", "Removing: ",tuple);
 }

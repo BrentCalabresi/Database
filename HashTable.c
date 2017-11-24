@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "HashTable.h"
+#include "Database.h"
 #include "LinkedList.c"
 
 
@@ -15,30 +17,89 @@ HashTable* HashTable_new(int size){
 }
 
 void HashTable_put(HashTable* table, int key, void* value){
-  //printf("%d\n",key );
   int h = hash(table, key);
+  printf("%s %s\n","Inserting value: ", value);
   LinkedList_add_at_end(table->buckets[h], value);
+  //printf("%s\n", "List after insert:");
+  //LinkedList_print_string_list(table->buckets[h]);
+}
+void HashTable_print(HashTable* table){
+  printf("\n%s\n", "Hashtable: ");
+  for (int i=0;i < table->size;i++) {
+    LinkedList_print_string_list(table->buckets[i]);
+  }
+  printf("\n");
 }
 
-void* HashTable_lookup(HashTable* table, int key){//search based on key
+CSG* HashTable_lookup_CSG(HashTable* table, CSG* relation){
+  int key = getKey(relation->course)+relation->studentId;
+  //printf("%s %d\n","lookup key: ",key );
   LinkedList* possibleBucket = table->buckets[hash(table, key)];
-  printf("%s %d\n","list equals null?: ",possibleBucket == NULL );
-  printf("%p\n",possibleBucket->first);
-  LinkedList_print_string_list(possibleBucket);
-  for (LinkedListNode* tuple = possibleBucket->first; tuple->next != NULL; tuple = tuple->next){
-    printf("%s\n", "made it into loop");
-    //if (tuple->data == key)//TODO fix comparison
-      return tuple->data;
+  //LinkedList_print_string_list(possibleBucket);
+
+  for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
+    //printf("%s\n", "made it into loop");
+    if (node->data == relation)
+      return node->data;
   }
   return NULL;
 }
 
+void Hashtable_remove_CSG(HashTable* table, CSG* relation){
+  //int key = atoi(relation->course)+relation->studentId;
+  int key = getKey(relation->course)+relation->studentId;
+  LinkedList* possibleBucket = table->buckets[hash(table, key)];
+
+  for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
+    //printf("%s\n", "made it into loop");
+    if (node->data == relation){
+      //printf("%s\n", "found tuple to delete");
+      LinkedList_remove(possibleBucket,relation);
+    }
+  }
+}
+
+SNAP* HashTable_lookup_SNAP(HashTable* table, SNAP* relation){
+  int key = relation->studentId;
+  //printf("%s %d\n","lookup key: ",key );
+  LinkedList* possibleBucket = table->buckets[hash(table, key)];
+  //LinkedList_print_string_list(possibleBucket);
+
+  for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
+    //printf("%s\n", "made it into loop");
+    if (node->data == relation)
+      return node->data;
+  }
+  return NULL;
+}
+void Hashtable_remove_SNAP(HashTable* table, SNAP* relation){
+  //int key = atoi(relation->course)+relation->studentId;
+  int key = relation->studentId;
+  LinkedList* possibleBucket = table->buckets[hash(table, key)];
+  LinkedList_print_string_list(possibleBucket);
+  for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
+    //printf("%s\n", "made it into loop");
+    if (node->data == relation){
+      printf("%s\n", "found tuple to delete");
+      LinkedList_remove(possibleBucket,relation);
+    }
+  }
+}
+
+int getKey(char* string){//generic function to convert string into int
+  int key = -1;
+  for(int i=0;i<strlen(string);i++){
+    key += (int)string[i];
+  }
+
+  return key;
+}
+
 int hash(HashTable* t, int key){//returns index of bucket to hash to
   key *= 479;
-  printf("%s %d\n","key: ",key);
+  //printf("%s %d\n","key: ",key);
   int size = t->size;
-  //printf("%d %s %d %s %d\n",key,"mod",size,"=",key%size);
   key = key%size;
-  printf("%s %d\n","array loc (modded to): ",key);
+  //printf("%s %d\n","array loc (modded to): ",key);
   return key;
 }
