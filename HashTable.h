@@ -16,8 +16,8 @@ typedef struct HashTable{
 HashTable* HashTable_new(int size);
 void HashTable_put(HashTable* table, int key, void* value);
 int hash(HashTable* t, int key);
-CSG* HashTable_lookup_CSG(HashTable* table, CSG* relation);
-void Hashtable_remove_CSG(HashTable* table, CSG* relation);
+void* HashTable_lookup(HashTable* table, int key, void* relation);
+void HashTable_remove(HashTable* table, int key, void* relation);
 
 SNAP* HashTable_lookup_SNAP(HashTable* table, SNAP* relation);
 void Hashtable_remove_SNAP(HashTable* table, SNAP* relation);

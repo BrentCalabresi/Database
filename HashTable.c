@@ -18,7 +18,7 @@ HashTable* HashTable_new(int size){
 
 void HashTable_put(HashTable* table, int key, void* value){
   int h = hash(table, key);
-  printf("%s %s\n","Inserting value: ", value);
+  //printf("%s %s\n","Inserting value: ", value);
   LinkedList_add_at_end(table->buckets[h], value);
   //printf("%s\n", "List after insert:");
   //LinkedList_print_string_list(table->buckets[h]);
@@ -31,8 +31,8 @@ void HashTable_print(HashTable* table){
   printf("\n");
 }
 
-CSG* HashTable_lookup_CSG(HashTable* table, CSG* relation){
-  int key = getKey(relation->course)+relation->studentId;
+void* HashTable_lookup(HashTable* table, int key, void* relation){
+  //int key = getKey(relation->course)+relation->studentId;
   //printf("%s %d\n","lookup key: ",key );
   LinkedList* possibleBucket = table->buckets[hash(table, key)];
   //LinkedList_print_string_list(possibleBucket);
@@ -45,42 +45,15 @@ CSG* HashTable_lookup_CSG(HashTable* table, CSG* relation){
   return NULL;
 }
 
-void Hashtable_remove_CSG(HashTable* table, CSG* relation){
+void HashTable_remove(HashTable* table, int key, void* relation){
   //int key = atoi(relation->course)+relation->studentId;
-  int key = getKey(relation->course)+relation->studentId;
+  //int key = getKey(relation->course)+relation->studentId;
   LinkedList* possibleBucket = table->buckets[hash(table, key)];
 
   for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
     //printf("%s\n", "made it into loop");
     if (node->data == relation){
       //printf("%s\n", "found tuple to delete");
-      LinkedList_remove(possibleBucket,relation);
-    }
-  }
-}
-
-SNAP* HashTable_lookup_SNAP(HashTable* table, SNAP* relation){
-  int key = relation->studentId;
-  //printf("%s %d\n","lookup key: ",key );
-  LinkedList* possibleBucket = table->buckets[hash(table, key)];
-  //LinkedList_print_string_list(possibleBucket);
-
-  for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
-    //printf("%s\n", "made it into loop");
-    if (node->data == relation)
-      return node->data;
-  }
-  return NULL;
-}
-void Hashtable_remove_SNAP(HashTable* table, SNAP* relation){
-  //int key = atoi(relation->course)+relation->studentId;
-  int key = relation->studentId;
-  LinkedList* possibleBucket = table->buckets[hash(table, key)];
-  LinkedList_print_string_list(possibleBucket);
-  for (LinkedListNode *node=possibleBucket->first; node != NULL; node=node->next){
-    //printf("%s\n", "made it into loop");
-    if (node->data == relation){
-      printf("%s\n", "found tuple to delete");
       LinkedList_remove(possibleBucket,relation);
     }
   }
